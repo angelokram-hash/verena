@@ -73,11 +73,19 @@
   .hairline-2 { border-color: var(--hairline-2); }
 
   :global([data-reveal]) { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
-  :global([data-reveal].revealed) { opacity: 1; transform: translateY(0); }
-  :global([data-reveal][data-delay="1"]) { transition-delay: 0.1s; }
-  :global([data-reveal][data-delay="2"]) { transition-delay: 0.2s; }
-  :global([data-reveal][data-delay="3"]) { transition-delay: 0.3s; }
-  :global([data-reveal][data-delay="4"]) { transition-delay: 0.45s; }
+  :global([data-reveal].revealed) { opacity: 1; transform: translateY(0) !important; }
+  :global([data-reveal][data-delay="1"]) { transition-delay: 0.12s; }
+  :global([data-reveal][data-delay="2"]) { transition-delay: 0.24s; }
+  :global([data-reveal][data-delay="3"]) { transition-delay: 0.36s; }
+  :global([data-reveal][data-delay="4"]) { transition-delay: 0.5s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-anim-0 { animation: fadeUp 0.7s ease both; }
+  .hero-anim-1 { animation: fadeUp 0.7s ease 0.15s both; }
+  .hero-anim-2 { animation: fadeUp 0.7s ease 0.3s both; }
 
   @keyframes ticker {
     from { transform: translateX(0); }
@@ -146,18 +154,18 @@
     </div>
 
     <!-- Main heading -->
-    <h1 data-reveal class="font-display font-light text-[#1a1814] leading-[0.9] mb-8" style="font-size:clamp(3.5rem,9vw,8rem)">
+    <h1 class="hero-anim-0 font-display font-light text-[#1a1814] leading-[0.9] mb-8" style="font-size:clamp(3.5rem,9vw,8rem)">
       Verena<br /><em>Vogel-Cohnitz.</em>
     </h1>
 
-    <div data-reveal data-delay="1" class="max-w-md mb-10">
+    <div class="hero-anim-1 max-w-md mb-10">
       <p class="text-[#6e665a] leading-relaxed" style="font-size:.9rem">
         Driving global sales and partnerships for KONPLOTT —<br/>bold jewelry, made differently.
       </p>
     </div>
 
     <!-- CTA buttons -->
-    <div data-reveal data-delay="2" class="flex flex-wrap gap-3">
+    <div class="hero-anim-2 flex flex-wrap gap-3">
       <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
         class="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#1ebe5c] text-white transition-colors"
         style="border-radius:2px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;">
