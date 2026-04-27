@@ -72,12 +72,12 @@
   .hairline { border-color: var(--hairline); }
   .hairline-2 { border-color: var(--hairline-2); }
 
-  [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
-  [data-reveal].revealed { opacity: 1; transform: translateY(0); }
-  [data-reveal][data-delay="1"] { transition-delay: 0.1s; }
-  [data-reveal][data-delay="2"] { transition-delay: 0.2s; }
-  [data-reveal][data-delay="3"] { transition-delay: 0.3s; }
-  [data-reveal][data-delay="4"] { transition-delay: 0.45s; }
+  :global([data-reveal]) { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+  :global([data-reveal].revealed) { opacity: 1; transform: translateY(0); }
+  :global([data-reveal][data-delay="1"]) { transition-delay: 0.1s; }
+  :global([data-reveal][data-delay="2"]) { transition-delay: 0.2s; }
+  :global([data-reveal][data-delay="3"]) { transition-delay: 0.3s; }
+  :global([data-reveal][data-delay="4"]) { transition-delay: 0.45s; }
 
   @keyframes ticker {
     from { transform: translateX(0); }
