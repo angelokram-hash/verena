@@ -3,12 +3,28 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  :root {
+    --font-display: "Fraunces", "Cormorant Garamond", Georgia, serif;
+    --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --paper: #f3efe7;
+    --paper-2: #eae4d8;
+    --ink: #1a1814;
+    --ink-2: #3a342c;
+    --ink-3: #6e665a;
+    --hairline: rgba(26,24,20,.14);
+    --hairline-2: rgba(26,24,20,.08);
   }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    @apply font-sans antialiased;
-    background-color: #faf8f4;
-    color: #1c1917;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
   }
 }
