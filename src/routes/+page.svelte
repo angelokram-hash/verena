@@ -197,10 +197,10 @@
       <div class="border-t hairline pt-10 mb-24">
         <span data-reveal class="label">The Brand</span>
       </div>
-      <div data-reveal class="flex flex-col items-start mb-14 gap-4">
-        <img src="/konplott-seal.gif" alt="KONPLOTT Seal" class="w-20 h-auto" style="filter:invert(0)" />
+      <div data-reveal class="flex flex-col items-start mb-14 gap-6">
+        <img src="/konplott-seal.gif" alt="KONPLOTT Seal" class="w-56 h-auto" />
         <div>
-          <p class="font-display font-light text-[#1a1814] tracking-widest" style="font-size:1.05rem;letter-spacing:.22em">KONPLOTT</p>
+          <p class="font-display font-light text-[#1a1814]" style="font-size:1.6rem;letter-spacing:.2em">KONPLOTT</p>
           <p class="label mt-1">Jewellery by Miranda Konstantinidou</p>
         </div>
       </div>
