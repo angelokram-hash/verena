@@ -233,6 +233,23 @@
       <span class="label text-right">KONPLOTT · Head of Sales</span>
     </div>
 
+    <!-- Miranda intro block -->
+    <div class="grid md:grid-cols-2 gap-0 mb-16 border hairline overflow-hidden" style="border-radius:3px">
+      <div class="relative overflow-hidden" style="min-height:340px">
+        <img src="/brand/image44.jpg" alt="Miranda Konstantinidou, Founder / Designer"
+          class="absolute inset-0 w-full h-full object-cover object-center" />
+      </div>
+      <div data-reveal class="flex flex-col justify-center p-10 bg-[#eae4d8]">
+        <p class="label mb-5">Miranda Konstantinidou — Founder / Designer</p>
+        <h3 class="font-display font-light text-[#1a1814] leading-tight mb-5" style="font-size:clamp(1.6rem,3vw,2.4rem)">
+          Jewelry<br /><em>Made Differently.</em>
+        </h3>
+        <p class="text-[#3a342c] leading-relaxed" style="font-size:.875rem">
+          In 1986, designer and entrepreneur Miranda Konstantinidou founded the fashion jewelry brand KONPLOTT. She broke with traditional conventions of color, form and material in jewelry design. Rather than imitating fine jewelry, she created bold, original fashion statements — pieces meant to be worn every day and to shine on the grand stage.
+        </p>
+      </div>
+    </div>
+
     <div class="grid md:grid-cols-2 gap-16 items-start">
       <div>
         <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
@@ -266,65 +283,127 @@
 </section>
 
 <!-- BRAND STORY -->
-<section id="brand" class="py-36 px-6 bg-[#eae4d8] overflow-hidden">
-  <div class="max-w-6xl mx-auto">
+<section id="brand" class="bg-[#eae4d8] overflow-hidden">
 
-    <!-- Label -->
-    <div class="border-t hairline pt-8 mb-28">
-      <span class="label">The Brand</span>
-    </div>
-
-    <!-- Giant heading with depth parallax -->
-    <div class="mb-36">
-      <h2 data-depth="1.6" class="font-display font-light text-[#1a1814] leading-[0.88]" style="font-size:clamp(3.5rem,8vw,7rem);will-change:transform">
+  <!-- Hero split: text left, Miranda photo right -->
+  <div class="grid md:grid-cols-2 min-h-screen">
+    <div class="flex flex-col justify-center px-6 py-32 md:px-14">
+      <div class="border-t hairline pt-8 mb-20">
+        <span class="label">The Brand</span>
+      </div>
+      <h2 data-depth="1.6" class="font-display font-light text-[#1a1814] leading-[0.88] mb-12" style="font-size:clamp(3rem,5.5vw,5.5rem);will-change:transform">
         Jewelry<br /><em>Made Differently.</em>
       </h2>
-    </div>
-
-    <!-- Founding story + Miranda quote -->
-    <div class="grid md:grid-cols-2 gap-20 mb-36 items-start">
       <div data-reveal>
-        <p class="label mb-6">Miranda Konstantinidou — Founder / Designer</p>
-        <p class="text-[#3a342c] leading-relaxed" style="font-size:.9rem">
-          In 1986, designer and entrepreneur Miranda Konstantinidou founded the fashion jewelry brand KONPLOTT. She broke with traditional conventions of color, form and material in jewelry design. Rather than imitating fine jewelry, she created bold, original fashion statements — pieces meant to be worn every day and to shine on the grand stage.
+        <p class="label mb-5">Miranda Konstantinidou — Founder / Designer</p>
+        <p class="text-[#3a342c] leading-relaxed" style="font-size:.9rem;max-width:420px">
+          In 1986, designer and entrepreneur Miranda Konstantinidou founded the fashion jewelry brand KONPLOTT. Rather than imitating fine jewelry, she created bold, original fashion statements — pieces meant to be worn every day and to shine on the grand stage.
         </p>
       </div>
-      <div data-reveal data-delay="2">
+    </div>
+    <!-- Miranda portrait -->
+    <div class="relative overflow-hidden" style="min-height:60vw">
+      <img data-depth="0.7" src="/brand/image44.jpg" alt="Miranda Konstantinidou, Founder"
+        class="absolute inset-0 w-full h-full object-cover object-center"
+        style="will-change:transform;transform:scale(1.08)" />
+    </div>
+  </div>
+
+  <!-- Full-width jewelry product image -->
+  <div class="relative overflow-hidden" style="height:52vw;max-height:660px">
+    <img data-depth="1.1" src="/brand/image29.jpg" alt="KONPLOTT jewelry"
+      class="absolute inset-0 w-full h-full object-cover object-center"
+      style="will-change:transform;transform:scale(1.1)" />
+    <div class="absolute bottom-8 left-6 md:left-14">
+      <span class="label" style="color:rgba(243,239,231,.65)">Bold jewelry · Made differently</span>
+    </div>
+  </div>
+
+  <!-- Design process: image left, quote right -->
+  <div class="grid md:grid-cols-2">
+    <div class="relative overflow-hidden" style="min-height:50vw;max-height:580px">
+      <img data-depth="0.9" src="/brand/image3.jpg" alt="Design sketching at KONPLOTT studio"
+        class="absolute inset-0 w-full h-full object-cover object-center"
+        style="will-change:transform;transform:scale(1.08)" />
+    </div>
+    <div class="flex flex-col justify-center px-8 py-20 md:px-14 bg-[#f3efe7]">
+      <div data-reveal>
+        <span class="label block mb-8">The Design Process</span>
         <blockquote>
-          <p data-depth="0.8" class="font-display font-light italic text-[#1a1814] leading-tight mb-5" style="font-size:clamp(1.4rem,2.5vw,2rem);will-change:transform">
+          <p class="font-display font-light italic text-[#1a1814] leading-tight mb-6" style="font-size:clamp(1.4rem,2.5vw,2rem)">
             "My ambition has always been to create jewelry for every woman, in every situation."
           </p>
-          <cite class="label not-italic">— Miranda Konstantinidou, Founder</cite>
+          <cite class="label not-italic">— Miranda Konstantinidou</cite>
         </blockquote>
       </div>
     </div>
+  </div>
 
-    <!-- Full-width centered quote -->
-    <div data-reveal class="text-center py-24 mb-36 border-t border-b hairline">
-      <p data-depth="1.2" class="font-display font-light italic text-[#1a1814] mx-auto" style="font-size:clamp(1.6rem,3.5vw,2.8rem);max-width:720px;line-height:1.25;will-change:transform">
-        "Buy only what makes your heart leap —<br/>today and tomorrow."
-      </p>
-      <p class="label mt-8">— Miranda Konstantinidou</p>
-    </div>
-
-    <!-- Timeline -->
-    <div class="mb-36">
-      <div class="border-t hairline pt-8 mb-20">
-        <span data-reveal class="label">Milestones</span>
+  <!-- Manufacturing: text + artisan image left, large crafting image right -->
+  <div class="grid md:grid-cols-2">
+    <div class="flex flex-col justify-between px-8 py-20 md:px-14 order-2 md:order-1 gap-10">
+      <div data-reveal>
+        <span class="label block mb-6">Handcrafted — Cebu, Philippines</span>
+        <p class="text-[#3a342c] leading-relaxed mb-10" style="font-size:.9rem;max-width:400px">
+          More than 1,000 employees — mostly women — find secure jobs, fair wages and a respectful environment at KONPLOTT's women-run manufactory, founded in 2001.
+        </p>
       </div>
-      <div>
-        {#each timeline as t, i}
-          <div data-reveal data-delay="{i % 3}"
-            class="grid items-baseline border-b hairline py-10"
-            style="grid-template-columns: 5rem 1fr">
-            <p class="font-display text-[#1a1814]" style="font-size:1.25rem">{t.year}</p>
-            <p class="text-[#3a342c] leading-relaxed" style="font-size:.875rem;padding-left:2rem">{t.text}</p>
-          </div>
-        {/each}
+      <div data-reveal data-delay="1" class="overflow-hidden" style="aspect-ratio:4/3">
+        <img src="/brand/image37.jpg" alt="Cebu artisan with KONPLOTT bracelet"
+          class="w-full h-full object-cover object-top" />
       </div>
     </div>
+    <div class="relative overflow-hidden order-1 md:order-2" style="min-height:50vw;max-height:680px">
+      <img data-depth="1.0" src="/brand/image30.jpg" alt="Jewelry manufacturing"
+        class="absolute inset-0 w-full h-full object-cover object-center"
+        style="will-change:transform;transform:scale(1.08)" />
+    </div>
+  </div>
 
-    <!-- Values + Global reach -->
+  <!-- Full-width centered quote -->
+  <div data-reveal class="text-center px-6 py-32 border-t border-b hairline bg-[#f3efe7]">
+    <p data-depth="0.9" class="font-display font-light italic text-[#1a1814] mx-auto" style="font-size:clamp(1.6rem,3.5vw,2.8rem);max-width:720px;line-height:1.25;will-change:transform">
+      "Buy only what makes your heart leap —<br/>today and tomorrow."
+    </p>
+    <p class="label mt-8">— Miranda Konstantinidou</p>
+  </div>
+
+  <!-- Timeline -->
+  <div class="max-w-6xl mx-auto px-6 py-28">
+    <div class="border-t hairline pt-8 mb-20">
+      <span data-reveal class="label">Milestones</span>
+    </div>
+    <div>
+      {#each timeline as t, i}
+        <div data-reveal data-delay="{i % 3}"
+          class="grid items-baseline border-b hairline py-10"
+          style="grid-template-columns: 5rem 1fr">
+          <p class="font-display text-[#1a1814]" style="font-size:1.25rem">{t.year}</p>
+          <p class="text-[#3a342c] leading-relaxed" style="font-size:.875rem;padding-left:2rem">{t.text}</p>
+        </div>
+      {/each}
+    </div>
+  </div>
+
+  <!-- Press -->
+  <div class="max-w-6xl mx-auto px-6 pb-20">
+    <div data-reveal class="border-t hairline pt-8 mb-14">
+      <span class="label">The press loves our pieces</span>
+    </div>
+    <div class="grid grid-cols-2 gap-3 md:gap-6">
+      <div data-reveal class="overflow-hidden" style="aspect-ratio:3/4">
+        <img src="/brand/image36.jpg" alt="Stylist Magazine — KONPLOTT"
+          class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+      </div>
+      <div data-reveal data-delay="1" class="overflow-hidden" style="aspect-ratio:3/4">
+        <img src="/brand/image49.jpg" alt="Vogue Germany — KONPLOTT"
+          class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Values grid -->
+  <div class="max-w-6xl mx-auto px-6 pb-28">
     <div data-reveal class="grid md:grid-cols-3 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
       <div class="p-10 border-r border-b hairline">
         <p class="label mb-5">Social Responsibility</p>
@@ -342,8 +421,8 @@
         <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">DE, AT, CH, LU, BE, NL, UK, IT, GR, FR, RO, IE, ZA, MN, CN — and beyond.</p>
       </div>
     </div>
-
   </div>
+
 </section>
 
 <!-- PARTNERSHIPS -->
