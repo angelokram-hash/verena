@@ -197,15 +197,11 @@
       <div class="border-t hairline pt-10 mb-24">
         <span data-reveal class="label">The Brand</span>
       </div>
-      <div data-reveal class="flex flex-col items-start mb-14 gap-6">
-        <img src="/konplott-seal.gif" alt="KONPLOTT Seal" class="w-56 h-auto" />
-        <div>
-          <p class="font-display font-light text-[#1a1814]" style="font-size:1.6rem;letter-spacing:.2em">KONPLOTT</p>
-          <p class="label mt-1">Jewellery by Miranda Konstantinidou</p>
-        </div>
+      <div data-reveal class="mb-14">
+        <img src="/konplott-seal.gif" alt="KONPLOTT Seal" class="w-80 h-auto" />
       </div>
       <h2 data-depth="1.5" class="font-display font-light text-[#1a1814] leading-[0.88] mb-14" style="font-size:clamp(3rem,5.5vw,5.5rem);will-change:transform">
-        Jewelry<br /><em>Made Differently.</em>
+        Jewellery by<br /><em>Miranda Konstantinidou</em>
       </h2>
       <div data-reveal>
         <p class="label mb-6">Miranda Konstantinidou — Founder / Designer</p>
