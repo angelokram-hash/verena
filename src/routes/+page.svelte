@@ -154,7 +154,7 @@
 <section class="min-h-screen flex flex-col items-center justify-center bg-[#f3efe7] pt-14 px-6">
   <div class="hero-anim-0 w-full max-w-lg" style="transform: translateY({heroParallax}px); will-change: transform;">
     <img src="/vcard.png" alt="Verena Vogel-Cohnitz – Head of Sales, KONPLOTT"
-      class="w-full h-auto drop-shadow-2xl" />
+      class="w-full h-auto" />
   </div>
 
   <div class="hero-anim-1 flex flex-wrap gap-3 mt-14">
