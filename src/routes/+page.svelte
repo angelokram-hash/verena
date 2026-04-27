@@ -198,7 +198,7 @@
         <span data-reveal class="label">The Brand</span>
       </div>
       <div data-reveal class="mb-14">
-        <img src="/konplott-seal.gif" alt="KONPLOTT Seal" class="w-80 h-auto" />
+        <img src="/konplott-seal.png" alt="KONPLOTT Seal" class="w-80 h-auto" />
       </div>
       <h2 data-depth="1.5" class="font-display font-light text-[#1a1814] leading-[0.88] mb-14" style="font-size:clamp(3rem,5.5vw,5.5rem);will-change:transform">
         Jewellery by<br /><em>Miranda Konstantinidou</em>
