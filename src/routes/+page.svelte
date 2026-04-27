@@ -8,8 +8,19 @@
   let heroParallax = 0;
 
   onMount(() => {
+    parallaxTargets = [...document.querySelectorAll('[data-depth]')].map(el => ({
+      el,
+      speed: parseFloat(el.dataset.depth),
+    }));
+
     const onScroll = () => {
-      heroParallax = window.scrollY * 0.32;
+      const sy = window.scrollY;
+      heroParallax = sy * 0.32;
+      parallaxTargets.forEach(({ el, speed }) => {
+        const rect = el.getBoundingClientRect();
+        const fromCenter = rect.top + rect.height / 2 - window.innerHeight / 2;
+        el.style.transform = `translateY(${fromCenter * speed * -0.07}px)`;
+      });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
 
@@ -20,7 +31,7 @@
           observer.unobserve(e.target);
         }
       }),
-      { threshold: 0.12 }
+      { threshold: 0.1 }
     );
     document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
@@ -65,6 +76,23 @@
   ];
 
   const skills = ['Sales Leadership', 'B2B', 'Wholesale', 'Fashion', 'Strategic Partnerships'];
+
+  const timeline = [
+    { year: '1986', text: 'Concept and realization of trend fashion jewelry at INTERSTOFF Frankfurt. KONPLOTT is born.' },
+    { year: '1990', text: 'Jewelry in various materials, including neoprene — breaking conventions of form and material.' },
+    { year: '1992', text: 'The South China Morning Post reports on Miranda\'s work as a "trend designer".' },
+    { year: '1997', text: 'Opening of the first KONPLOTT store.' },
+    { year: '2000', text: 'Opening of a women-run manufactory.' },
+    { year: '2001', text: 'Founding of the atelier in Cebu, Philippines.' },
+    { year: '2006', text: 'Gifted a book about Miranda\'s work — a milestone in recognition.' },
+    { year: '2007', text: 'Costume design for "Orpheus in the Underworld", Vienna.' },
+    { year: '2008', text: 'Costume design for "The Magic Flute", Berlin.' },
+    { year: '2012', text: 'Mercedes-Benz Fashion Week Berlin — 6 consecutive seasons.' },
+    { year: '2015', text: 'Keynote at Swarovski\'s 120th anniversary celebration.' },
+    { year: '2016', text: 'Celebrating 30 years of bold jewelry, made differently.' },
+  ];
+
+  let parallaxTargets = [];
 </script>
 
 <style>
@@ -237,55 +265,84 @@
   </div>
 </section>
 
-<!-- EXPERIENCE -->
-<section id="experience" class="py-20 px-6 bg-[#eae4d8]">
+<!-- BRAND STORY -->
+<section id="brand" class="py-36 px-6 bg-[#eae4d8] overflow-hidden">
   <div class="max-w-6xl mx-auto">
-    <div class="border-t hairline pt-8 mb-12">
-      <span class="label">Career</span>
+
+    <!-- Label -->
+    <div class="border-t hairline pt-8 mb-28">
+      <span class="label">The Brand</span>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-12">
-      <div>
-        <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight" style="font-size:clamp(2rem,3.5vw,3rem)">
-          Experience.
-        </h2>
+    <!-- Giant heading with depth parallax -->
+    <div class="mb-36">
+      <h2 data-depth="1.6" class="font-display font-light text-[#1a1814] leading-[0.88]" style="font-size:clamp(3.5rem,8vw,7rem);will-change:transform">
+        Jewelry<br /><em>Made Differently.</em>
+      </h2>
+    </div>
+
+    <!-- Founding story + Miranda quote -->
+    <div class="grid md:grid-cols-2 gap-20 mb-36 items-start">
+      <div data-reveal>
+        <p class="label mb-6">Miranda Konstantinidou — Founder / Designer</p>
+        <p class="text-[#3a342c] leading-relaxed" style="font-size:.9rem">
+          In 1986, designer and entrepreneur Miranda Konstantinidou founded the fashion jewelry brand KONPLOTT. She broke with traditional conventions of color, form and material in jewelry design. Rather than imitating fine jewelry, she created bold, original fashion statements — pieces meant to be worn every day and to shine on the grand stage.
+        </p>
       </div>
-      <div data-reveal data-delay="1" class="md:col-span-2">
-        <div class="border-t hairline pt-6">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <p class="font-medium text-[#1a1814]">Head of Sales</p>
-              <p class="text-[#6e665a]" style="font-size:.8rem">KONPLOTT GmbH</p>
-            </div>
-            <span class="label">Sep 2021 – Present</span>
-          </div>
-          <p class="text-[#3a342c] leading-relaxed mb-6" style="font-size:.875rem">
-            Leading global sales strategy and partnership development for KONPLOTT. Built and scaled
-            an international network of distributors, retailers, and sales agents across Europe and
-            beyond. Driving B2B wholesale growth while maintaining the brand's artistic integrity.
+      <div data-reveal data-delay="2">
+        <blockquote>
+          <p data-depth="0.8" class="font-display font-light italic text-[#1a1814] leading-tight mb-5" style="font-size:clamp(1.4rem,2.5vw,2rem);will-change:transform">
+            "My ambition has always been to create jewelry for every woman, in every situation."
           </p>
-          <div class="flex flex-wrap gap-2 mb-6">
-            {#each skills as skill}
-              <span class="label px-2.5 py-1 border hairline">{skill}</span>
-            {/each}
-          </div>
-          <div class="grid grid-cols-3 gap-6 border-t hairline pt-5">
-            <div>
-              <p class="font-display text-2xl text-[#1a1814]">4+</p>
-              <p class="label">Years</p>
-            </div>
-            <div>
-              <p class="font-display text-2xl text-[#1a1814]">500+</p>
-              <p class="label">Partners</p>
-            </div>
-            <div>
-              <p class="font-display text-2xl text-[#1a1814]">EU</p>
-              <p class="label">Luxembourg</p>
-            </div>
-          </div>
-        </div>
+          <cite class="label not-italic">— Miranda Konstantinidou, Founder</cite>
+        </blockquote>
       </div>
     </div>
+
+    <!-- Full-width centered quote -->
+    <div data-reveal class="text-center py-24 mb-36 border-t border-b hairline">
+      <p data-depth="1.2" class="font-display font-light italic text-[#1a1814] mx-auto" style="font-size:clamp(1.6rem,3.5vw,2.8rem);max-width:720px;line-height:1.25;will-change:transform">
+        "Buy only what makes your heart leap —<br/>today and tomorrow."
+      </p>
+      <p class="label mt-8">— Miranda Konstantinidou</p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="mb-36">
+      <div class="border-t hairline pt-8 mb-20">
+        <span data-reveal class="label">Milestones</span>
+      </div>
+      <div>
+        {#each timeline as t, i}
+          <div data-reveal data-delay="{i % 3}"
+            class="grid items-baseline border-b hairline py-10"
+            style="grid-template-columns: 5rem 1fr">
+            <p class="font-display text-[#1a1814]" style="font-size:1.25rem">{t.year}</p>
+            <p class="text-[#3a342c] leading-relaxed" style="font-size:.875rem;padding-left:2rem">{t.text}</p>
+          </div>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Values + Global reach -->
+    <div data-reveal class="grid md:grid-cols-3 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
+      <div class="p-10 border-r border-b hairline">
+        <p class="label mb-5">Social Responsibility</p>
+        <p class="font-display font-light text-[#1a1814] leading-tight mb-4" style="font-size:2.2rem">1,000+<br/><em>Employees</em></p>
+        <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">Mostly women — secure jobs, fair wages and a respectful environment.</p>
+      </div>
+      <div class="p-10 border-r border-b hairline">
+        <p class="label mb-5">Sustainability</p>
+        <p class="font-display font-light text-[#1a1814] leading-tight mb-4" style="font-size:2.2rem">Long-<br/><em>lasting.</em></p>
+        <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">KONPLOTT strives to make all processes as resource-efficient as possible.</p>
+      </div>
+      <div class="p-10 border-r border-b hairline">
+        <p class="label mb-5">Global Reach</p>
+        <p class="font-display font-light text-[#1a1814] leading-tight mb-4" style="font-size:2.2rem">500+<br/><em>Partners.</em></p>
+        <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">DE, AT, CH, LU, BE, NL, UK, IT, GR, FR, RO, IE, ZA, MN, CN — and beyond.</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
