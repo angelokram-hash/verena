@@ -4,34 +4,49 @@
   let menuOpen = false;
   let photoError = false;
   let contactPhotoError = false;
-
   let heroParallax = 0;
 
   onMount(() => {
-    parallaxTargets = [...document.querySelectorAll('[data-depth]')].map(el => ({
-      el,
-      speed: parseFloat(el.dataset.depth),
-    }));
+    // Cache initial positions ONCE so parallax stays stable
+    const collectTargets = () =>
+      [...document.querySelectorAll('[data-depth]')].map(el => ({
+        el,
+        speed: parseFloat(el.dataset.depth),
+        initTop: el.getBoundingClientRect().top + window.scrollY,
+        h: el.offsetHeight,
+      }));
+
+    let targets = collectTargets();
+    let ticking = false;
+
+    const update = () => {
+      const sy = window.scrollY;
+      heroParallax = sy * 0.3;
+      const vpH = window.innerHeight;
+      targets.forEach(({ el, speed, initTop, h }) => {
+        const elCenter = initTop + h / 2;
+        const vpCenter = sy + vpH / 2;
+        el.style.transform = `translateY(${(vpCenter - elCenter) * speed * 0.09}px)`;
+      });
+      ticking = false;
+    };
 
     const onScroll = () => {
-      const sy = window.scrollY;
-      heroParallax = sy * 0.32;
-      parallaxTargets.forEach(({ el, speed }) => {
-        const rect = el.getBoundingClientRect();
-        const fromCenter = rect.top + rect.height / 2 - window.innerHeight / 2;
-        el.style.transform = `translateY(${fromCenter * speed * -0.07}px)`;
-      });
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
 
+    window.addEventListener('scroll', onScroll, { passive: true });
+    requestAnimationFrame(update);
+
+    // Recalculate positions on resize
+    window.addEventListener('resize', () => { targets = collectTargets(); }, { passive: true });
+
+    // Reveal on enter
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('revealed');
-          observer.unobserve(e.target);
-        }
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); }
       }),
-      { threshold: 0.1 }
+      { threshold: 0.08 }
     );
     document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
@@ -53,29 +68,11 @@
   ];
 
   const partnerships = [
-    {
-      num: '01',
-      title: 'Sales Agents & Distributors',
-      desc: 'Join our global network of sales agents and distributors. Represent KONPLOTT in your region and bring bold jewelry to new markets.',
-    },
-    {
-      num: '02',
-      title: 'Retailers & Concept Stores',
-      desc: 'Stock KONPLOTT in your boutique or concept store. Our collections appeal to fashion-forward customers who appreciate artistic jewelry.',
-    },
-    {
-      num: '03',
-      title: 'Fashion-Forward Agencies',
-      desc: 'Creative collaborations with agencies and stylists who want to feature KONPLOTT in editorial, campaigns, and fashion projects.',
-    },
-    {
-      num: '04',
-      title: 'General Partnerships',
-      desc: "Have a different collaboration idea? I'm always open to exploring new partnership models that align with KONPLOTT's vision.",
-    },
+    { num: '01', title: 'Sales Agents & Distributors', desc: 'Join our global network of sales agents and distributors. Represent KONPLOTT in your region and bring bold jewelry to new markets.' },
+    { num: '02', title: 'Retailers & Concept Stores', desc: 'Stock KONPLOTT in your boutique or concept store. Our collections appeal to fashion-forward customers who appreciate artistic jewelry.' },
+    { num: '03', title: 'Fashion-Forward Agencies', desc: 'Creative collaborations with agencies and stylists who want to feature KONPLOTT in editorial, campaigns, and fashion projects.' },
+    { num: '04', title: 'General Partnerships', desc: "Have a different collaboration idea? I'm always open to exploring new partnership models that align with KONPLOTT's vision." },
   ];
-
-  const skills = ['Sales Leadership', 'B2B', 'Wholesale', 'Fashion', 'Strategic Partnerships'];
 
   const timeline = [
     { year: '1986', text: 'Concept and realization of trend fashion jewelry at INTERSTOFF Frankfurt. KONPLOTT is born.' },
@@ -91,29 +88,26 @@
     { year: '2015', text: 'Keynote at Swarovski\'s 120th anniversary celebration.' },
     { year: '2016', text: 'Celebrating 30 years of bold jewelry, made differently.' },
   ];
-
-  let parallaxTargets = [];
 </script>
 
 <style>
   .label { font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); }
   .hairline { border-color: var(--hairline); }
-  .hairline-2 { border-color: var(--hairline-2); }
 
-  :global([data-reveal]) { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
-  :global([data-reveal].revealed) { opacity: 1; transform: translateY(0) !important; }
+  /* Reveal: fade + slide. No !important — JS parallax (inline style) wins over CSS class. */
+  :global([data-reveal]) { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  :global([data-reveal].revealed) { opacity: 1; transform: translateY(0); }
   :global([data-reveal][data-delay="1"]) { transition-delay: 0.12s; }
-  :global([data-reveal][data-delay="2"]) { transition-delay: 0.24s; }
-  :global([data-reveal][data-delay="3"]) { transition-delay: 0.36s; }
-  :global([data-reveal][data-delay="4"]) { transition-delay: 0.5s; }
+  :global([data-reveal][data-delay="2"]) { transition-delay: 0.25s; }
+  :global([data-reveal][data-delay="3"]) { transition-delay: 0.38s; }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .hero-anim-0 { animation: fadeUp 0.7s ease both; }
-  .hero-anim-1 { animation: fadeUp 0.7s ease 0.15s both; }
-  .hero-anim-2 { animation: fadeUp 0.7s ease 0.3s both; }
+  .hero-anim-0 { animation: fadeUp 0.8s ease both; }
+  .hero-anim-1 { animation: fadeUp 0.8s ease 0.18s both; }
+  .hero-anim-2 { animation: fadeUp 0.8s ease 0.34s both; }
 
   @keyframes ticker {
     from { transform: translateX(0); }
@@ -126,8 +120,6 @@
 <header class="fixed top-0 inset-x-0 z-50 bg-[#f3efe7] border-b hairline">
   <nav class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
     <a href="/" class="font-display text-[17px] tracking-tight text-[#1a1814]">V. Vogel-Cohnitz</a>
-
-    <!-- Desktop -->
     <div class="hidden md:flex items-center gap-6">
       <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" class="label hover:text-[#1a1814] transition-colors">LinkedIn</a>
       <a href={EMAIL} class="label hover:text-[#1a1814] transition-colors">E-Mail</a>
@@ -138,8 +130,6 @@
         WhatsApp
       </a>
     </div>
-
-    <!-- Mobile burger -->
     <button class="md:hidden text-[#1a1814]" on:click={() => menuOpen = !menuOpen} aria-label="Menu">
       {#if menuOpen}
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -148,7 +138,6 @@
       {/if}
     </button>
   </nav>
-
   {#if menuOpen}
     <div class="md:hidden bg-[#f3efe7] border-t hairline px-6 py-5 space-y-4">
       <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 label text-[#25D366]" on:click={() => menuOpen=false}>
@@ -163,17 +152,15 @@
 
 <!-- HERO -->
 <section class="min-h-screen flex items-center bg-[#f3efe7] pt-14 px-6 overflow-hidden">
-  <div class="max-w-6xl mx-auto w-full py-16 md:py-24" style="transform: translateY({heroParallax}px); will-change: transform;">
-    <!-- top label row -->
-    <div class="flex items-center gap-4 mb-8">
+  <div class="max-w-6xl mx-auto w-full py-28 md:py-44" style="transform: translateY({heroParallax}px); will-change: transform;">
+    <div class="flex items-center gap-4 mb-12">
       {#if !photoError}
         <img src="/verena.jpg" alt="Verena Vogel-Cohnitz"
           class="w-10 h-10 rounded-full object-cover object-top"
           style="border:1px solid var(--hairline)"
           on:error={() => photoError = true} />
       {:else}
-        <div class="w-10 h-10 rounded-full bg-[#eae4d8] flex items-center justify-center"
-          style="border:1px solid var(--hairline)">
+        <div class="w-10 h-10 rounded-full bg-[#eae4d8] flex items-center justify-center" style="border:1px solid var(--hairline)">
           <span class="text-[#6e665a] text-xs font-semibold">VV</span>
         </div>
       {/if}
@@ -181,18 +168,16 @@
       <span class="label">Head of Sales KONPLOTT</span>
     </div>
 
-    <!-- Main heading -->
-    <h1 class="hero-anim-0 font-display font-light text-[#1a1814] leading-[0.9] mb-8" style="font-size:clamp(3.5rem,9vw,8rem)">
+    <h1 class="hero-anim-0 font-display font-light text-[#1a1814] leading-[0.9] mb-10" style="font-size:clamp(3.5rem,9vw,8rem)">
       Verena<br /><em>Vogel-Cohnitz.</em>
     </h1>
 
-    <div class="hero-anim-1 max-w-md mb-10">
+    <div class="hero-anim-1 max-w-md mb-12">
       <p class="text-[#6e665a] leading-relaxed" style="font-size:.9rem">
         Driving global sales and partnerships for KONPLOTT —<br/>bold jewelry, made differently.
       </p>
     </div>
 
-    <!-- CTA buttons -->
     <div class="hero-anim-2 flex flex-wrap gap-3">
       <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
         class="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#1ebe5c] text-white transition-colors"
@@ -226,44 +211,27 @@
 </div>
 
 <!-- ABOUT -->
-<section id="about" class="py-20 px-6 bg-[#f3efe7]">
+<section id="about" class="py-36 px-6 bg-[#f3efe7]">
   <div class="max-w-6xl mx-auto">
-    <div class="border-t hairline pt-8 mb-12 flex items-start justify-between gap-4">
-      <span class="label">About</span>
-      <span class="label text-right">KONPLOTT · Head of Sales</span>
+    <div class="border-t hairline pt-10 mb-24 flex items-start justify-between gap-4">
+      <span data-reveal class="label">About</span>
+      <span data-reveal class="label text-right">KONPLOTT · Head of Sales</span>
     </div>
 
-    <!-- Miranda intro block -->
-    <div class="grid md:grid-cols-2 gap-0 mb-16 border hairline overflow-hidden" style="border-radius:3px">
-      <div class="relative overflow-hidden" style="min-height:340px">
-        <img src="/brand/image44.jpg" alt="Miranda Konstantinidou, Founder / Designer"
-          class="absolute inset-0 w-full h-full object-cover object-center" />
-      </div>
-      <div data-reveal class="flex flex-col justify-center p-10 bg-[#eae4d8]">
-        <p class="label mb-5">Miranda Konstantinidou — Founder / Designer</p>
-        <h3 class="font-display font-light text-[#1a1814] leading-tight mb-5" style="font-size:clamp(1.6rem,3vw,2.4rem)">
-          Jewelry<br /><em>Made Differently.</em>
-        </h3>
-        <p class="text-[#3a342c] leading-relaxed" style="font-size:.875rem">
-          In 1986, designer and entrepreneur Miranda Konstantinidou founded the fashion jewelry brand KONPLOTT. She broke with traditional conventions of color, form and material in jewelry design. Rather than imitating fine jewelry, she created bold, original fashion statements — pieces meant to be worn every day and to shine on the grand stage.
-        </p>
-      </div>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-16 items-start">
+    <div class="grid md:grid-cols-2 gap-24 items-start">
       <div>
-        <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
+        <h2 data-depth="0.65" class="font-display font-light text-[#1a1814] leading-tight mb-10" style="font-size:clamp(2.2rem,4vw,3.5rem);will-change:transform">
           KONPLOTT's<br /><em>Mission.</em>
         </h2>
       </div>
       <div>
-        <p data-reveal data-delay="1" class="text-[#3a342c] leading-relaxed mb-8" style="font-size:.875rem">
+        <p data-reveal class="text-[#3a342c] leading-relaxed mb-10" style="font-size:.9rem">
           KONPLOTT creates bold, artistic jewelry that challenges convention. As Head of Sales,
           I connect our vision with partners worldwide — building relationships that bring our
           handcrafted pieces to fashion-forward customers across the globe.
         </p>
-        <blockquote class="border-l-2 pl-4" style="border-color:var(--hairline)">
-          <p class="font-display italic text-[#6e665a]" style="font-size:1.1rem">
+        <blockquote data-reveal data-delay="1" class="border-l-2 pl-6" style="border-color:var(--hairline)">
+          <p class="font-display italic text-[#6e665a]" style="font-size:1.15rem;line-height:1.4">
             "Our designs are bold, artistic statements — each piece handcrafted with passion and purpose."
           </p>
         </blockquote>
@@ -271,10 +239,10 @@
     </div>
 
     <!-- Stats -->
-    <div data-reveal data-delay="2" class="grid grid-cols-2 md:grid-cols-4 gap-0 mt-16 border-t border-b hairline divide-x" style="--tw-divide-opacity:1">
-      {#each highlights as h}
-        <div class="p-6 hairline" style="border-color:var(--hairline)">
-          <p class="font-display font-light text-[#1a1814] mb-1" style="font-size:2rem">{h.value}</p>
+    <div class="mt-24 border-t border-b hairline divide-x grid grid-cols-2 md:grid-cols-4" style="--tw-divide-opacity:1">
+      {#each highlights as h, i}
+        <div data-reveal data-delay="{i}" class="p-10" style="border-color:var(--hairline)">
+          <p data-depth="0.4" class="font-display font-light text-[#1a1814] mb-2" style="font-size:2.2rem;will-change:transform">{h.value}</p>
           <p class="label">{h.label}</p>
         </div>
       {/each}
@@ -286,139 +254,180 @@
 <section id="brand" class="bg-[#eae4d8] overflow-hidden">
 
   <!-- Hero split: text left, Miranda photo right -->
-  <div class="grid md:grid-cols-2 min-h-screen">
-    <div class="flex flex-col justify-center px-6 py-32 md:px-14">
-      <div class="border-t hairline pt-8 mb-20">
-        <span class="label">The Brand</span>
+  <div class="grid md:grid-cols-2" style="min-height:100vh">
+    <div class="flex flex-col justify-center px-6 py-40 md:px-16">
+      <div class="border-t hairline pt-10 mb-24">
+        <span data-reveal class="label">The Brand</span>
       </div>
-      <h2 data-depth="1.6" class="font-display font-light text-[#1a1814] leading-[0.88] mb-12" style="font-size:clamp(3rem,5.5vw,5.5rem);will-change:transform">
+      <h2 data-depth="1.5" class="font-display font-light text-[#1a1814] leading-[0.88] mb-14" style="font-size:clamp(3rem,5.5vw,5.5rem);will-change:transform">
         Jewelry<br /><em>Made Differently.</em>
       </h2>
       <div data-reveal>
-        <p class="label mb-5">Miranda Konstantinidou — Founder / Designer</p>
-        <p class="text-[#3a342c] leading-relaxed" style="font-size:.9rem;max-width:420px">
+        <p class="label mb-6">Miranda Konstantinidou — Founder / Designer</p>
+        <p class="text-[#3a342c] leading-relaxed" style="font-size:.9rem;max-width:420px;line-height:1.8">
           In 1986, designer and entrepreneur Miranda Konstantinidou founded the fashion jewelry brand KONPLOTT. Rather than imitating fine jewelry, she created bold, original fashion statements — pieces meant to be worn every day and to shine on the grand stage.
         </p>
       </div>
     </div>
-    <!-- Miranda portrait -->
     <div class="relative overflow-hidden" style="min-height:60vw">
-      <img data-depth="0.7" src="/brand/image44.jpg" alt="Miranda Konstantinidou, Founder"
+      <img data-depth="0.8" src="/brand/image44.jpg" alt="Miranda Konstantinidou, Founder"
         class="absolute inset-0 w-full h-full object-cover object-center"
-        style="will-change:transform;transform:scale(1.08)" />
+        style="will-change:transform;transform:scale(1.1)" />
     </div>
   </div>
 
-  <!-- Full-width jewelry product image -->
-  <div class="relative overflow-hidden" style="height:52vw;max-height:660px">
-    <img data-depth="1.1" src="/brand/image29.jpg" alt="KONPLOTT jewelry"
+  <!-- Full-width jewelry image -->
+  <div class="relative overflow-hidden" style="height:55vw;max-height:680px">
+    <img data-depth="1.2" src="/brand/image29.jpg" alt="KONPLOTT jewelry"
       class="absolute inset-0 w-full h-full object-cover object-center"
-      style="will-change:transform;transform:scale(1.1)" />
-    <div class="absolute bottom-8 left-6 md:left-14">
-      <span class="label" style="color:rgba(243,239,231,.65)">Bold jewelry · Made differently</span>
+      style="will-change:transform;transform:scale(1.12)" />
+    <div class="absolute bottom-10 left-6 md:left-16">
+      <span data-reveal class="label" style="color:rgba(243,239,231,.6)">Bold jewelry · Made differently</span>
     </div>
   </div>
 
   <!-- Design process: image left, quote right -->
   <div class="grid md:grid-cols-2">
-    <div class="relative overflow-hidden" style="min-height:50vw;max-height:580px">
-      <img data-depth="0.9" src="/brand/image3.jpg" alt="Design sketching at KONPLOTT studio"
+    <div class="relative overflow-hidden" style="min-height:52vw;max-height:620px">
+      <img data-depth="1.0" src="/brand/image3.jpg" alt="Design sketching"
         class="absolute inset-0 w-full h-full object-cover object-center"
-        style="will-change:transform;transform:scale(1.08)" />
+        style="will-change:transform;transform:scale(1.1)" />
     </div>
-    <div class="flex flex-col justify-center px-8 py-20 md:px-14 bg-[#f3efe7]">
-      <div data-reveal>
-        <span class="label block mb-8">The Design Process</span>
-        <blockquote>
-          <p class="font-display font-light italic text-[#1a1814] leading-tight mb-6" style="font-size:clamp(1.4rem,2.5vw,2rem)">
-            "My ambition has always been to create jewelry for every woman, in every situation."
-          </p>
-          <cite class="label not-italic">— Miranda Konstantinidou</cite>
-        </blockquote>
-      </div>
+    <div class="flex flex-col justify-center px-8 py-28 md:px-16 bg-[#f3efe7]">
+      <span data-reveal class="label block mb-10">The Design Process</span>
+      <blockquote>
+        <p data-depth="0.6" class="font-display font-light italic text-[#1a1814] leading-tight mb-8" style="font-size:clamp(1.5rem,2.5vw,2.2rem);will-change:transform">
+          "My ambition has always been to create jewelry for every woman, in every situation."
+        </p>
+        <cite data-reveal class="label not-italic">— Miranda Konstantinidou</cite>
+      </blockquote>
     </div>
   </div>
 
-  <!-- Manufacturing: text + artisan image left, large crafting image right -->
+  <!-- Product Collage -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px">
+    <!-- Row 1: 4 portrait shots -->
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.45" src="/brand/image13.png" alt="KONPLOTT ring"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.5" src="/brand/image8.png" alt="KONPLOTT earring"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.55" src="/brand/image7.png" alt="KONPLOTT red earring"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.45" src="/brand/image4.png" alt="KONPLOTT necklace"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <!-- Large image: spans 2 cols × 2 rows -->
+    <div class="overflow-hidden" style="grid-column:1/3;grid-row:2/4">
+      <img data-depth="0.7" src="/brand/image2.png" alt="KONPLOTT campaign"
+        class="w-full h-full object-cover object-top" style="will-change:transform" />
+    </div>
+    <!-- 4 small images filling right 2 cols × 2 rows -->
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.5" src="/brand/image5.png" alt="KONPLOTT amber earring"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.45" src="/brand/image9.png" alt="KONPLOTT crystal cuff"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.55" src="/brand/image11.png" alt="KONPLOTT dark earring"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+    <div class="overflow-hidden" style="aspect-ratio:3/4">
+      <img data-depth="0.5" src="/brand/image1.png" alt="KONPLOTT pink ring"
+        class="w-full h-full object-cover object-center" style="will-change:transform" />
+    </div>
+  </div>
+
+  <!-- Manufacturing: text left, crafting image right -->
   <div class="grid md:grid-cols-2">
-    <div class="flex flex-col justify-between px-8 py-20 md:px-14 order-2 md:order-1 gap-10">
-      <div data-reveal>
-        <span class="label block mb-6">Handcrafted — Cebu, Philippines</span>
-        <p class="text-[#3a342c] leading-relaxed mb-10" style="font-size:.9rem;max-width:400px">
+    <div class="flex flex-col justify-between px-8 py-28 md:px-16 order-2 md:order-1 gap-14">
+      <div>
+        <span data-reveal class="label block mb-8">Handcrafted — Cebu, Philippines</span>
+        <p data-reveal data-delay="1" class="text-[#3a342c] leading-relaxed" style="font-size:.9rem;max-width:400px;line-height:1.8">
           More than 1,000 employees — mostly women — find secure jobs, fair wages and a respectful environment at KONPLOTT's women-run manufactory, founded in 2001.
         </p>
       </div>
-      <div data-reveal data-delay="1" class="overflow-hidden" style="aspect-ratio:4/3">
-        <img src="/brand/image37.jpg" alt="Cebu artisan with KONPLOTT bracelet"
-          class="w-full h-full object-cover object-top" />
+      <div data-reveal data-delay="2" class="overflow-hidden" style="aspect-ratio:4/3">
+        <img data-depth="0.5" src="/brand/image37.jpg" alt="Cebu artisan"
+          class="w-full h-full object-cover object-top"
+          style="will-change:transform" />
       </div>
     </div>
-    <div class="relative overflow-hidden order-1 md:order-2" style="min-height:50vw;max-height:680px">
-      <img data-depth="1.0" src="/brand/image30.jpg" alt="Jewelry manufacturing"
+    <div class="relative overflow-hidden order-1 md:order-2" style="min-height:52vw;max-height:700px">
+      <img data-depth="1.1" src="/brand/image30.jpg" alt="Jewelry manufacturing"
         class="absolute inset-0 w-full h-full object-cover object-center"
-        style="will-change:transform;transform:scale(1.08)" />
+        style="will-change:transform;transform:scale(1.1)" />
     </div>
   </div>
 
   <!-- Full-width centered quote -->
-  <div data-reveal class="text-center px-6 py-32 border-t border-b hairline bg-[#f3efe7]">
-    <p data-depth="0.9" class="font-display font-light italic text-[#1a1814] mx-auto" style="font-size:clamp(1.6rem,3.5vw,2.8rem);max-width:720px;line-height:1.25;will-change:transform">
+  <div class="text-center px-6 py-40 border-t border-b hairline bg-[#f3efe7]">
+    <p data-depth="1.0" class="font-display font-light italic text-[#1a1814] mx-auto" style="font-size:clamp(1.8rem,3.5vw,3rem);max-width:740px;line-height:1.2;will-change:transform">
       "Buy only what makes your heart leap —<br/>today and tomorrow."
     </p>
-    <p class="label mt-8">— Miranda Konstantinidou</p>
+    <p data-reveal class="label mt-10">— Miranda Konstantinidou</p>
   </div>
 
   <!-- Timeline -->
-  <div class="max-w-6xl mx-auto px-6 py-28">
-    <div class="border-t hairline pt-8 mb-20">
+  <div class="max-w-6xl mx-auto px-6 py-36">
+    <div class="border-t hairline pt-10 mb-24">
       <span data-reveal class="label">Milestones</span>
     </div>
-    <div>
-      {#each timeline as t, i}
-        <div data-reveal data-delay="{i % 3}"
-          class="grid items-baseline border-b hairline py-10"
-          style="grid-template-columns: 5rem 1fr">
-          <p class="font-display text-[#1a1814]" style="font-size:1.25rem">{t.year}</p>
-          <p class="text-[#3a342c] leading-relaxed" style="font-size:.875rem;padding-left:2rem">{t.text}</p>
-        </div>
-      {/each}
-    </div>
+    {#each timeline as t, i}
+      <div data-reveal data-delay="{i % 3}"
+        class="grid items-baseline border-b hairline py-14"
+        style="grid-template-columns: 6rem 1fr">
+        <p data-depth="0.35" class="font-display text-[#1a1814]" style="font-size:1.3rem;will-change:transform">{t.year}</p>
+        <p class="text-[#3a342c] leading-relaxed" style="font-size:.9rem;padding-left:2.5rem;line-height:1.7">{t.text}</p>
+      </div>
+    {/each}
   </div>
 
   <!-- Press -->
-  <div class="max-w-6xl mx-auto px-6 pb-20">
-    <div data-reveal class="border-t hairline pt-8 mb-14">
-      <span class="label">The press loves our pieces</span>
+  <div class="max-w-6xl mx-auto px-6 pb-24">
+    <div class="border-t hairline pt-10 mb-16">
+      <span data-reveal class="label">The press loves our pieces</span>
     </div>
-    <div class="grid grid-cols-2 gap-3 md:gap-6">
+    <div class="grid grid-cols-2 gap-4 md:gap-8">
       <div data-reveal class="overflow-hidden" style="aspect-ratio:3/4">
-        <img src="/brand/image36.jpg" alt="Stylist Magazine — KONPLOTT"
-          class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+        <img data-depth="0.6" src="/brand/image36.jpg" alt="Stylist Magazine"
+          class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          style="will-change:transform" />
       </div>
       <div data-reveal data-delay="1" class="overflow-hidden" style="aspect-ratio:3/4">
-        <img src="/brand/image49.jpg" alt="Vogue Germany — KONPLOTT"
-          class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+        <img data-depth="0.6" src="/brand/image49.jpg" alt="Vogue Germany"
+          class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          style="will-change:transform" />
       </div>
     </div>
   </div>
 
   <!-- Values grid -->
-  <div class="max-w-6xl mx-auto px-6 pb-28">
-    <div data-reveal class="grid md:grid-cols-3 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
-      <div class="p-10 border-r border-b hairline">
-        <p class="label mb-5">Social Responsibility</p>
-        <p class="font-display font-light text-[#1a1814] leading-tight mb-4" style="font-size:2.2rem">1,000+<br/><em>Employees</em></p>
-        <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">Mostly women — secure jobs, fair wages and a respectful environment.</p>
+  <div class="max-w-6xl mx-auto px-6 pb-36">
+    <div class="grid md:grid-cols-3 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
+      <div data-reveal class="p-12 border-r border-b hairline">
+        <p class="label mb-6">Social Responsibility</p>
+        <p data-depth="0.45" class="font-display font-light text-[#1a1814] leading-tight mb-5" style="font-size:2.4rem;will-change:transform">1,000+<br/><em>Employees</em></p>
+        <p class="text-[#6e665a] leading-relaxed" style="font-size:.82rem;line-height:1.7">Mostly women — secure jobs, fair wages and a respectful environment.</p>
       </div>
-      <div class="p-10 border-r border-b hairline">
-        <p class="label mb-5">Sustainability</p>
-        <p class="font-display font-light text-[#1a1814] leading-tight mb-4" style="font-size:2.2rem">Long-<br/><em>lasting.</em></p>
-        <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">KONPLOTT strives to make all processes as resource-efficient as possible.</p>
+      <div data-reveal data-delay="1" class="p-12 border-r border-b hairline">
+        <p class="label mb-6">Sustainability</p>
+        <p data-depth="0.45" class="font-display font-light text-[#1a1814] leading-tight mb-5" style="font-size:2.4rem;will-change:transform">Long-<br/><em>lasting.</em></p>
+        <p class="text-[#6e665a] leading-relaxed" style="font-size:.82rem;line-height:1.7">KONPLOTT strives to make all processes as resource-efficient as possible.</p>
       </div>
-      <div class="p-10 border-r border-b hairline">
-        <p class="label mb-5">Global Reach</p>
-        <p class="font-display font-light text-[#1a1814] leading-tight mb-4" style="font-size:2.2rem">500+<br/><em>Partners.</em></p>
-        <p class="text-[#6e665a] leading-relaxed" style="font-size:.8rem">DE, AT, CH, LU, BE, NL, UK, IT, GR, FR, RO, IE, ZA, MN, CN — and beyond.</p>
+      <div data-reveal data-delay="2" class="p-12 border-r border-b hairline">
+        <p class="label mb-6">Global Reach</p>
+        <p data-depth="0.45" class="font-display font-light text-[#1a1814] leading-tight mb-5" style="font-size:2.4rem;will-change:transform">500+<br/><em>Partners.</em></p>
+        <p class="text-[#6e665a] leading-relaxed" style="font-size:.82rem;line-height:1.7">DE, AT, CH, LU, BE, NL, UK, IT, GR, FR, RO, IE, ZA, MN, CN — and beyond.</p>
       </div>
     </div>
   </div>
@@ -426,24 +435,24 @@
 </section>
 
 <!-- PARTNERSHIPS -->
-<section id="partnerships" class="py-20 px-6 bg-[#f3efe7]">
+<section id="partnerships" class="py-36 px-6 bg-[#f3efe7]">
   <div class="max-w-6xl mx-auto">
-    <div class="border-t hairline pt-8 mb-12 flex items-start justify-between">
-      <span class="label">Partnership Opportunities</span>
+    <div class="border-t hairline pt-10 mb-24 flex items-start justify-between">
+      <span data-reveal class="label">Partnership Opportunities</span>
       <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
         class="label text-[#25D366] hover:underline">Kontakt aufnehmen →</a>
     </div>
 
-    <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-14" style="font-size:clamp(2.2rem,4vw,3.5rem)">
+    <h2 data-depth="0.65" class="font-display font-light text-[#1a1814] leading-tight mb-20" style="font-size:clamp(2.2rem,4vw,3.5rem);will-change:transform">
       Let's work<br /><em>together.</em>
     </h2>
 
-    <div data-reveal data-delay="1" class="grid md:grid-cols-2 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
-      {#each partnerships as p}
-        <div class="p-8 border-r border-b hairline" style="border-color:var(--hairline)">
-          <p class="label mb-4">{p.num}</p>
-          <h3 class="font-medium text-[#1a1814] mb-3">{p.title}</h3>
-          <p class="text-[#6e665a] leading-relaxed mb-5" style="font-size:.8rem">{p.desc}</p>
+    <div class="grid md:grid-cols-2 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
+      {#each partnerships as p, i}
+        <div data-reveal data-delay="{i % 2}" class="p-12 border-r border-b hairline" style="border-color:var(--hairline)">
+          <p class="label mb-6">{p.num}</p>
+          <h3 data-depth="0.3" class="font-medium text-[#1a1814] mb-4" style="will-change:transform">{p.title}</h3>
+          <p class="text-[#6e665a] leading-relaxed mb-7" style="font-size:.82rem;line-height:1.7">{p.desc}</p>
           <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
             class="label text-[#1a1814] hover:text-[#6e665a] transition-colors">Get in Touch →</a>
         </div>
@@ -453,27 +462,26 @@
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="py-20 px-6 bg-[#eae4d8]">
+<section id="contact" class="py-36 px-6 bg-[#eae4d8]">
   <div class="max-w-6xl mx-auto">
-    <div class="border-t hairline pt-8 mb-12">
-      <span class="label">Get in Touch</span>
+    <div class="border-t hairline pt-10 mb-24">
+      <span data-reveal class="label">Get in Touch</span>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-16 items-center">
+    <div class="grid md:grid-cols-2 gap-24 items-center">
       <div>
-        <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
+        <h2 data-depth="0.65" class="font-display font-light text-[#1a1814] leading-tight mb-10" style="font-size:clamp(2.2rem,4vw,3.5rem);will-change:transform">
           Let's connect<br /><em>directly.</em>
         </h2>
-        <p class="text-[#6e665a] leading-relaxed mb-8" style="font-size:.875rem">
+        <p data-reveal class="text-[#6e665a] leading-relaxed" style="font-size:.9rem;line-height:1.8">
           Whether you're interested in distributing KONPLOTT, stocking our collections,
           or exploring creative collaborations — I'd love to hear from you.
         </p>
       </div>
 
-      <div data-reveal data-delay="1" class="border hairline bg-[#f3efe7] p-8" style="border-radius:3px">
-        <!-- Profile row -->
-        <div class="flex items-center gap-4 mb-7 pb-6 border-b hairline">
-          <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0" style="border:1px solid var(--hairline)">
+      <div data-reveal data-delay="1" class="border hairline bg-[#f3efe7] p-10" style="border-radius:3px">
+        <div class="flex items-center gap-5 mb-9 pb-8 border-b hairline">
+          <div class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0" style="border:1px solid var(--hairline)">
             {#if !contactPhotoError}
               <img src="/verena.jpg" alt="Verena" class="w-full h-full object-cover object-top"
                 on:error={() => contactPhotoError = true} />
@@ -485,26 +493,24 @@
           </div>
           <div>
             <p class="font-medium text-[#1a1814] text-sm">Verena Vogel-Cohnitz</p>
-            <p class="label mt-0.5">Head of Sales · KONPLOTT · Luxembourg</p>
+            <p class="label mt-1">Head of Sales · KONPLOTT · Luxembourg</p>
           </div>
         </div>
-
-        <!-- Buttons -->
-        <div class="flex flex-col gap-2.5">
+        <div class="flex flex-col gap-3">
           <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-            class="flex items-center justify-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#1ebe5c] text-white transition-colors w-full"
+            class="flex items-center justify-center gap-2 px-5 py-3.5 bg-[#25D366] hover:bg-[#1ebe5c] text-white transition-colors w-full"
             style="border-radius:2px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             WhatsApp öffnen
           </a>
-          <div class="grid grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-2 gap-3">
             <a href={EMAIL}
-              class="flex items-center justify-center px-4 py-3 bg-[#1a1814] hover:bg-[#3a342c] text-white transition-colors"
+              class="flex items-center justify-center px-4 py-3.5 bg-[#1a1814] hover:bg-[#3a342c] text-white transition-colors"
               style="border-radius:2px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;">
               E-Mail
             </a>
             <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-              class="flex items-center justify-center px-4 py-3 border hairline hover:bg-[#eae4d8] text-[#1a1814] transition-colors"
+              class="flex items-center justify-center px-4 py-3.5 border hairline hover:bg-[#eae4d8] text-[#1a1814] transition-colors"
               style="border-radius:2px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;">
               LinkedIn
             </a>
@@ -525,7 +531,7 @@
 </a>
 
 <!-- FOOTER -->
-<footer class="py-5 px-6 border-t hairline bg-[#f3efe7]">
+<footer class="py-6 px-6 border-t hairline bg-[#f3efe7]">
   <div class="max-w-6xl mx-auto flex items-center justify-between">
     <p class="label">© 2026 Verena Vogel-Cohnitz</p>
     <div class="flex items-center gap-5">
