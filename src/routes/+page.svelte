@@ -1,7 +1,34 @@
 <script>
+  import { onMount } from 'svelte';
+
   let menuOpen = false;
   let photoError = false;
   let contactPhotoError = false;
+
+  let heroParallax = 0;
+
+  onMount(() => {
+    const onScroll = () => {
+      heroParallax = window.scrollY * 0.32;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed');
+          observer.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      observer.disconnect();
+    };
+  });
 
   const WHATSAPP = 'https://wa.me/31624942748';
   const EMAIL = 'mailto:vogel-cohnitz@konplott.com';
@@ -44,6 +71,19 @@
   .label { font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); }
   .hairline { border-color: var(--hairline); }
   .hairline-2 { border-color: var(--hairline-2); }
+
+  [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+  [data-reveal].revealed { opacity: 1; transform: translateY(0); }
+  [data-reveal][data-delay="1"] { transition-delay: 0.1s; }
+  [data-reveal][data-delay="2"] { transition-delay: 0.2s; }
+  [data-reveal][data-delay="3"] { transition-delay: 0.3s; }
+  [data-reveal][data-delay="4"] { transition-delay: 0.45s; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .ticker-inner { display: flex; gap: 3rem; white-space: nowrap; animation: ticker 22s linear infinite; }
 </style>
 
 <!-- NAV -->
@@ -86,8 +126,8 @@
 </header>
 
 <!-- HERO -->
-<section class="min-h-screen flex items-center bg-[#f3efe7] pt-14 px-6">
-  <div class="max-w-6xl mx-auto w-full py-16 md:py-24">
+<section class="min-h-screen flex items-center bg-[#f3efe7] pt-14 px-6 overflow-hidden">
+  <div class="max-w-6xl mx-auto w-full py-16 md:py-24" style="transform: translateY({heroParallax}px); will-change: transform;">
     <!-- top label row -->
     <div class="flex items-center gap-4 mb-8">
       {#if !photoError}
@@ -102,22 +142,22 @@
         </div>
       {/if}
       <img src="/konplott-logo.png" alt="KONPLOTT" class="h-8 w-auto" style="opacity:.35" />
-      <span class="label">Head of Sales · Luxembourg</span>
+      <span class="label">Head of Sales KONPLOTT</span>
     </div>
 
     <!-- Main heading -->
-    <h1 class="font-display font-light text-[#1a1814] leading-[0.9] mb-8" style="font-size:clamp(3.5rem,9vw,8rem)">
+    <h1 data-reveal class="font-display font-light text-[#1a1814] leading-[0.9] mb-8" style="font-size:clamp(3.5rem,9vw,8rem)">
       Verena<br /><em>Vogel-Cohnitz.</em>
     </h1>
 
-    <div class="max-w-md mb-10">
+    <div data-reveal data-delay="1" class="max-w-md mb-10">
       <p class="text-[#6e665a] leading-relaxed" style="font-size:.9rem">
         Driving global sales and partnerships for KONPLOTT —<br/>bold jewelry, made differently.
       </p>
     </div>
 
     <!-- CTA buttons -->
-    <div class="flex flex-wrap gap-3">
+    <div data-reveal data-delay="2" class="flex flex-wrap gap-3">
       <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
         class="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#1ebe5c] text-white transition-colors"
         style="border-radius:2px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;">
@@ -135,17 +175,17 @@
 
 <!-- TICKER -->
 <div class="bg-[#eae4d8] border-t border-b hairline overflow-hidden py-3">
-  <div class="flex gap-12 whitespace-nowrap label text-[#6e665a] animate-none">
-    <span class="inline-flex gap-12 items-center">
-      <span>Head of Sales · KONPLOTT</span><span>·</span>
-      <span>500+ Global Partners</span><span>·</span>
-      <span>Luxembourg</span><span>·</span>
-      <span>Est. 1986</span><span>·</span>
-      <span>1,000+ Artisans</span><span>·</span>
-      <span>Bold Jewelry · Made Differently</span><span>·</span>
-      <span>Head of Sales · KONPLOTT</span><span>·</span>
-      <span>500+ Global Partners</span>
-    </span>
+  <div class="ticker-inner label text-[#6e665a]">
+    {#each [0,1] as _}
+      <span class="inline-flex gap-10 items-center pr-10">
+        <span>Head of Sales · KONPLOTT</span><span>·</span>
+        <span>500+ Global Partners</span><span>·</span>
+        <span>Luxembourg</span><span>·</span>
+        <span>Est. 1986</span><span>·</span>
+        <span>1,000+ Artisans</span><span>·</span>
+        <span>Bold Jewelry · Made Differently</span><span>·</span>
+      </span>
+    {/each}
   </div>
 </div>
 
@@ -159,12 +199,12 @@
 
     <div class="grid md:grid-cols-2 gap-16 items-start">
       <div>
-        <h2 class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
+        <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
           KONPLOTT's<br /><em>Mission.</em>
         </h2>
       </div>
       <div>
-        <p class="text-[#3a342c] leading-relaxed mb-8" style="font-size:.875rem">
+        <p data-reveal data-delay="1" class="text-[#3a342c] leading-relaxed mb-8" style="font-size:.875rem">
           KONPLOTT creates bold, artistic jewelry that challenges convention. As Head of Sales,
           I connect our vision with partners worldwide — building relationships that bring our
           handcrafted pieces to fashion-forward customers across the globe.
@@ -178,7 +218,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-0 mt-16 border-t border-b hairline divide-x" style="--tw-divide-opacity:1">
+    <div data-reveal data-delay="2" class="grid grid-cols-2 md:grid-cols-4 gap-0 mt-16 border-t border-b hairline divide-x" style="--tw-divide-opacity:1">
       {#each highlights as h}
         <div class="p-6 hairline" style="border-color:var(--hairline)">
           <p class="font-display font-light text-[#1a1814] mb-1" style="font-size:2rem">{h.value}</p>
@@ -198,11 +238,11 @@
 
     <div class="grid md:grid-cols-3 gap-12">
       <div>
-        <h2 class="font-display font-light text-[#1a1814] leading-tight" style="font-size:clamp(2rem,3.5vw,3rem)">
+        <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight" style="font-size:clamp(2rem,3.5vw,3rem)">
           Experience.
         </h2>
       </div>
-      <div class="md:col-span-2">
+      <div data-reveal data-delay="1" class="md:col-span-2">
         <div class="border-t hairline pt-6">
           <div class="flex items-start justify-between mb-4">
             <div>
@@ -250,11 +290,11 @@
         class="label text-[#25D366] hover:underline">Kontakt aufnehmen →</a>
     </div>
 
-    <h2 class="font-display font-light text-[#1a1814] leading-tight mb-14" style="font-size:clamp(2.2rem,4vw,3.5rem)">
+    <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-14" style="font-size:clamp(2.2rem,4vw,3.5rem)">
       Let's work<br /><em>together.</em>
     </h2>
 
-    <div class="grid md:grid-cols-2 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
+    <div data-reveal data-delay="1" class="grid md:grid-cols-2 gap-0 border-t hairline border-l" style="border-color:var(--hairline)">
       {#each partnerships as p}
         <div class="p-8 border-r border-b hairline" style="border-color:var(--hairline)">
           <p class="label mb-4">{p.num}</p>
@@ -277,7 +317,7 @@
 
     <div class="grid md:grid-cols-2 gap-16 items-center">
       <div>
-        <h2 class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
+        <h2 data-reveal class="font-display font-light text-[#1a1814] leading-tight mb-6" style="font-size:clamp(2.2rem,4vw,3.5rem)">
           Let's connect<br /><em>directly.</em>
         </h2>
         <p class="text-[#6e665a] leading-relaxed mb-8" style="font-size:.875rem">
@@ -286,7 +326,7 @@
         </p>
       </div>
 
-      <div class="border hairline bg-[#f3efe7] p-8" style="border-radius:3px">
+      <div data-reveal data-delay="1" class="border hairline bg-[#f3efe7] p-8" style="border-radius:3px">
         <!-- Profile row -->
         <div class="flex items-center gap-4 mb-7 pb-6 border-b hairline">
           <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0" style="border:1px solid var(--hairline)">
