@@ -1,5 +1,8 @@
 <script>
   let menuOpen = false;
+  let photoError = false;
+  let logoError = false;
+  let contactPhotoError = false;
 
   const navLinks = [
     { href: '#partnerships', label: 'Partnerships' },
@@ -138,28 +141,28 @@
     <!-- Profile photo -->
     <div class="mb-6 flex justify-center">
       <div class="relative">
-        <img
-          src="/verena.jpg"
-          alt="Verena Vogel-Cohnitz"
-          class="w-32 h-32 rounded-full object-cover object-top border-4 border-white shadow-xl"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-        />
-        <!-- Fallback initials -->
-        <div class="w-32 h-32 rounded-full border-4 border-white shadow-xl bg-gradient-to-br from-amber-200 to-amber-400 hidden items-center justify-center">
-          <span class="text-stone-800 font-bold text-3xl">VV</span>
-        </div>
+        {#if !photoError}
+          <img
+            src="/verena.jpg"
+            alt="Verena Vogel-Cohnitz"
+            class="w-32 h-32 rounded-full object-cover object-top border-4 border-white shadow-xl"
+            on:error={() => photoError = true}
+          />
+        {:else}
+          <div class="w-32 h-32 rounded-full border-4 border-white shadow-xl bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center">
+            <span class="text-stone-800 font-bold text-3xl">VV</span>
+          </div>
+        {/if}
       </div>
     </div>
 
     <!-- KONPLOTT logo above name, subtle -->
     <div class="flex justify-center mb-3">
-      <img
-        src="/konplott-logo.svg"
-        alt="KONPLOTT"
-        class="h-14 w-auto opacity-50"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
-      />
-      <p class="hidden text-xs font-medium tracking-[0.3em] uppercase text-stone-400">KONPLOTT</p>
+      {#if !logoError}
+        <img src="/konplott-logo.svg" alt="KONPLOTT" class="h-14 w-auto opacity-50" on:error={() => logoError = true} />
+      {:else}
+        <p class="text-xs font-medium tracking-[0.3em] uppercase text-stone-400">KONPLOTT</p>
+      {/if}
     </div>
 
     <p class="text-amber-700 text-sm font-medium tracking-[0.2em] uppercase mb-4">Head of Sales</p>
@@ -336,9 +339,12 @@
 
     <div class="bg-[#faf8f4] border border-stone-200 rounded-2xl p-8 mb-8 shadow-sm">
       <div class="flex items-center gap-4 mb-6">
-        <div class="w-14 h-14 rounded-full border-2 border-stone-200 overflow-hidden flex-shrink-0">
-          <img src="/verena.jpg" alt="Verena" class="w-full h-full object-cover object-top"
-            onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#fcd34d,#f59e0b)';this.parentElement.innerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;font-size:1.125rem;color:#292524;\'>VV</span>'" />
+        <div class="w-14 h-14 rounded-full border-2 border-stone-200 overflow-hidden flex-shrink-0 bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center">
+          {#if !contactPhotoError}
+            <img src="/verena.jpg" alt="Verena" class="w-full h-full object-cover object-top" on:error={() => contactPhotoError = true} />
+          {:else}
+            <span class="font-bold text-stone-800">VV</span>
+          {/if}
         </div>
         <div class="text-left">
           <p class="font-bold text-stone-900">Verena Vogel-Cohnitz</p>
